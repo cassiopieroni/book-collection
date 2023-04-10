@@ -1,7 +1,7 @@
 export class CreateBookDto {
-  name: string;
-  publisher: string;
+  title: string;
+  bookPublisher: string;
   author: string;
-  releaseYear: number;
-  pages: number;
+  totalPages: number;
+  isFinishedReading: boolean;
 }
