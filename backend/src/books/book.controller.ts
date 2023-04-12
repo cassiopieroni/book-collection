@@ -29,6 +29,6 @@ export class BookController {
         isFinishedReading,
       },
     });
-    return { book };
+    return { data: { ...book } };
   }
 }
