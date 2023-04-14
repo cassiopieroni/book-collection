@@ -1,49 +1,24 @@
-import { useEffect, useState } from 'react';
+import { SnackbarAlertProps } from '@/components/Commons/SnackbarAlert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import { boxFormStyle } from './Register.styles';
-import useBooksService from '@/features/books/services/hooks/useBooksService';
-import { SnackbarAlertProps } from '@/components/Commons/SnackbarAlert';
+import { useState } from 'react';
 import RegisterForm, { FormValues } from '../RegisterForm';
+import { boxFormStyle } from './Register.styles';
 
 type Props = {
-  setLoading: (open: boolean) => void;
   setAlert: (props: SnackbarAlertProps) => void;
+  onCreateBook: (formValues: FormValues) => Promise<void>;
 };
 
-const Register = ({ setLoading, setAlert }: Props) => {
-  const { createBook, loading } = useBooksService();
-
-  useEffect(() => {
-    setLoading(loading);
-  }, [loading, setLoading]);
-
-  const handleCreateBook = async (formValues: FormValues) => {
-    try {
-      const response = await createBook(formValues);
-
-      handleAlert({
-        message: `Livro ${response?.title} criado com sucesso`,
-        severity: 'success',
-      });
-
-      handleCloseFormModal();
-    } catch (err: Error | any) {
-      handleAlert({ message: err?.message || '', severity: 'error' });
-    }
+const Register = ({ setAlert, onCreateBook }: Props) => {
+  const handleCreateBook = (formValues: FormValues) => {
+    onCreateBook(formValues).then(() => handleCloseFormModal());
   };
 
   const [openFormModal, setOpenFormModal] = useState(false);
   const handleOpenFormModal = () => setOpenFormModal(true);
   const handleCloseFormModal = () => setOpenFormModal(false);
-
-  const handleAlert = ({
-    message,
-    severity,
-  }: Omit<SnackbarAlertProps, 'open'>) => {
-    setAlert({ message, severity, open: true });
-  };
 
   return (
     <Box py={4} px={2}>
