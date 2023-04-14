@@ -31,8 +31,32 @@ const useBooksService = () => {
     }
   };
 
+  const getAllBooks = async (): Promise<Book[]> => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(URL_BASE, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro na requisição');
+      }
+
+      return await response.json();
+    } catch (error: Error | any) {
+      throw new Error(error?.message || 'Algo deu errado!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     createBook,
+    getAllBooks,
     loading,
   };
 };

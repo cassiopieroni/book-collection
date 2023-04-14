@@ -1,11 +1,11 @@
 import Head from '@/components/Commons/Head';
-import HomeScreen from '@/features/books/Home.screen';
+import BooksScreen from '@/features/books/Books.screen';
 
 export default function Home() {
   return (
     <>
       <Head />
-      <HomeScreen />
+      <BooksScreen />
     </>
   );
 }

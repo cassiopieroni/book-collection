@@ -12,13 +12,14 @@ type Props = {
 };
 
 const Register = ({ setAlert, onCreateBook }: Props) => {
-  const handleCreateBook = (formValues: FormValues) => {
-    onCreateBook(formValues).then(() => handleCloseFormModal());
-  };
-
   const [openFormModal, setOpenFormModal] = useState(false);
   const handleOpenFormModal = () => setOpenFormModal(true);
   const handleCloseFormModal = () => setOpenFormModal(false);
+
+  const handleCreateBook = async (formValues: FormValues) => {
+    await onCreateBook(formValues);
+    handleCloseFormModal();
+  };
 
   return (
     <Box py={4} px={2}>

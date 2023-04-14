@@ -109,8 +109,8 @@ export default function RegisterForm({
           variant="standard"
           size="small"
           fullWidth
-          name="bookPublisher"
-          value={form.bookPublisher}
+          name="author"
+          value={form.author}
           onChange={handleChange}
         />
         <TextField
@@ -120,8 +120,8 @@ export default function RegisterForm({
           variant="standard"
           size="small"
           fullWidth
-          name="author"
-          value={form.author}
+          name="bookPublisher"
+          value={form.bookPublisher}
           onChange={handleChange}
         />
         <Box
