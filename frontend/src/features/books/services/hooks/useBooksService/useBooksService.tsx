@@ -1,4 +1,4 @@
-import { Book } from '@/types/book.type';
+import { Book } from '@/features/books/types/book.type';
 import { useState } from 'react';
 
 const URL_BASE = 'http://localhost:3000/books/';

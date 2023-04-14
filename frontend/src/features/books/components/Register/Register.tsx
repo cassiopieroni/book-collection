@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
-import RegisterForm, { FormValues } from '../RegisterForm';
-import { SnackbarAlertProps } from '../Commons/SnackbarAlert';
-import useBooksService from '@/services/hooks/useBooksService';
 import { boxFormStyle } from './Register.styles';
+import useBooksService from '@/features/books/services/hooks/useBooksService';
+import { SnackbarAlertProps } from '@/components/Commons/SnackbarAlert';
+import RegisterForm, { FormValues } from '../RegisterForm';
 
 type Props = {
   setLoading: (open: boolean) => void;

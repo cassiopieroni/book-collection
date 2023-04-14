@@ -1,5 +1,5 @@
 import Head from '@/components/Commons/Head';
-import HomeScreen from '@/screens/HomeScreen';
+import HomeScreen from '@/features/books/Home.screen';
 
 export default function Home() {
   return (

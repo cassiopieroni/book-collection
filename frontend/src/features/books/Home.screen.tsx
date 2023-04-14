@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import { Backdrop, Box, CircularProgress } from '@mui/material';
-import Header from '@/components/Layout/Header';
-import Register from '@/components/Register';
+import Loading from '@/components/Commons/Loading';
 import SnackbarAlert, {
   SnackbarAlertProps,
 } from '@/components/Commons/SnackbarAlert';
 import LayoutWithHeader from '@/components/Layout/LayoutWithHeader';
-import Loading from '@/components/Commons/Loading';
+import { Box } from '@mui/material';
+import { useState } from 'react';
+import Register from './components/Register';
 
 const defaultAlertValue: SnackbarAlertProps = {
   message: '',
