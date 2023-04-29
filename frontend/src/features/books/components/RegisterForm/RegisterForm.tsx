@@ -1,8 +1,6 @@
+import { useContext, useState, ChangeEvent, SyntheticEvent } from 'react';
 import { SnackbarAlertContext } from '@/providers/SnackbarAlertProvider';
-import { Button, Checkbox, FormControlLabel } from '@mui/material';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import * as React from 'react';
+import { Box, Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import { FormValues } from './RegisterForm.types';
 
 type Props = {
@@ -26,19 +24,20 @@ export default function RegisterForm({
   buttonText = 'cadastrar',
   initialFormValues = defaultFormValues
 }: Props) {
-  const { errorAlert } = React.useContext(SnackbarAlertContext);
+  const { errorAlert } = useContext(SnackbarAlertContext);
 
-  const [form, setForm] = React.useState<FormValues>(initialFormValues);
+  const [form, setForm] = useState<FormValues>(initialFormValues);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = event.target;
     const newValue = type === 'checkbox' ? checked : value;
 
     setForm({ ...form, [name]: newValue });
   };
 
-  const handleSubmit = (event: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (!isValidValues()) {
       return;
     }
@@ -95,6 +94,7 @@ export default function RegisterForm({
           value={form.title}
           onChange={handleChange}
         />
+
         <TextField
           required={requiredValues}
           label="Autor"
@@ -106,6 +106,7 @@ export default function RegisterForm({
           value={form.author}
           onChange={handleChange}
         />
+
         <TextField
           required={requiredValues}
           label="Editora"
@@ -117,6 +118,7 @@ export default function RegisterForm({
           value={form.bookPublisher}
           onChange={handleChange}
         />
+
         <Box
           display={'flex'}
           alignItems={'center'}
@@ -133,6 +135,7 @@ export default function RegisterForm({
             value={form.totalPages}
             onChange={handleChange}
           />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -145,6 +148,7 @@ export default function RegisterForm({
           />
         </Box>
       </div>
+
       <Box my={2} width={'100%'}>
         <Button variant="contained" fullWidth type="submit">
           {buttonText}
