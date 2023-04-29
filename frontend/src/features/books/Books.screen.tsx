@@ -1,41 +1,27 @@
 import Loading from '@/components/Commons/Loading';
-import SnackbarAlert, {
-  SnackbarAlertProps,
-} from '@/components/Commons/SnackbarAlert';
 import LayoutWithHeader from '@/components/Layout/LayoutWithHeader';
+import { SnackbarAlertContext } from '@/providers/SnackbarAlertProvider';
 import { Box } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import BooksTable from './components/BooksTable';
 import Register from './components/Register';
 import { FormValues } from './components/RegisterForm';
 import useBooksService from './services/hooks/useBooksService';
 import { Book } from './types/book.type';
 
-const defaultAlertValue: SnackbarAlertProps = {
-  message: '',
-  open: false,
-  severity: 'success',
-};
-
 const BooksScreen = () => {
-  const [alert, setAlert] = useState<SnackbarAlertProps>(defaultAlertValue);
-
-  const setSuccessAlert = (message: string) =>
-    setAlert({ message, severity: 'success', open: true });
-
-  const setErrorAlert = (message: string) =>
-    setAlert({ message, severity: 'error', open: true });
+  const { errorAlert, successAlert } = useContext(SnackbarAlertContext);
 
   const { createBook, getAllBooks, loading } = useBooksService();
 
   const handleCreateBook = async (formValues: FormValues) => {
     try {
-      const response = await createBook(formValues);
-      setSuccessAlert(`Livro ${response?.title} criado com sucesso`);
+      await createBook(formValues);
+      successAlert(`Livro adicionado com sucesso`);
 
       await handleGetAllBooks();
     } catch (err: Error | any) {
-      setErrorAlert(err?.message || '');
+      errorAlert(err?.message || 'Algo deu errado =/');
     }
   };
 
@@ -46,7 +32,7 @@ const BooksScreen = () => {
       const response = await getAllBooks();
       setBooks(response);
     } catch (err: Error | any) {
-      setErrorAlert('Não foi possível buscar sua lista de livros');
+      errorAlert('Não foi possível buscar sua lista de livros');
     }
   };
 
@@ -59,7 +45,7 @@ const BooksScreen = () => {
     <>
       <LayoutWithHeader>
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-          <Register setAlert={setAlert} onCreateBook={handleCreateBook} />
+          <Register onCreateBook={handleCreateBook} />
         </Box>
 
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
@@ -68,11 +54,6 @@ const BooksScreen = () => {
       </LayoutWithHeader>
 
       <Loading isLoading={loading} />
-
-      <SnackbarAlert
-        onClose={() => setAlert(defaultAlertValue)}
-        snackbarAlertProps={alert}
-      />
     </>
   );
 };

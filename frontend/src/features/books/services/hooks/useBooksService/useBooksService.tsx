@@ -1,7 +1,8 @@
 import { Book } from '@/features/books/types/book.type';
+import { DetailedBook } from '@/features/books/types/detailedBook.type';
 import { useState } from 'react';
 
-const URL_BASE = 'http://localhost:3000/books/';
+const URL_BASE = 'http://localhost:3000/books';
 
 const useBooksService = () => {
   const [loading, setLoading] = useState(false);
@@ -54,9 +55,35 @@ const useBooksService = () => {
     }
   };
 
+  const getBook = async (id: Book['id']): Promise<DetailedBook> => {
+    try {
+      setLoading(true);
+
+      const url = `${URL_BASE}/${id}`;
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro na requisição');
+      }
+
+      return await response.json();
+    } catch (error: Error | any) {
+      throw new Error(error?.message || 'Algo deu errado!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     createBook,
     getAllBooks,
+    getBook,
     loading,
   };
 };

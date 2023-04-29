@@ -1,16 +1,15 @@
-import * as React from 'react';
+import { SnackbarAlertContext } from '@/providers/SnackbarAlertProvider';
+import { Button, Checkbox, FormControlLabel } from '@mui/material';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { Button, Checkbox, FormControlLabel } from '@mui/material';
+import * as React from 'react';
 import { FormValues } from './RegisterForm.types';
-import { SnackbarAlertProps } from '@/components/Commons/SnackbarAlert';
 
 type Props = {
   onSubmit: (form: FormValues) => void;
   requiredValues?: boolean;
   buttonText?: string;
   initialFormValues?: FormValues;
-  setAlert: (props: SnackbarAlertProps) => void;
 };
 
 const defaultFormValues: FormValues = {
@@ -25,9 +24,10 @@ export default function RegisterForm({
   onSubmit,
   requiredValues = false,
   buttonText = 'cadastrar',
-  initialFormValues = defaultFormValues,
-  setAlert,
+  initialFormValues = defaultFormValues
 }: Props) {
+  const { errorAlert } = React.useContext(SnackbarAlertContext);
+
   const [form, setForm] = React.useState<FormValues>(initialFormValues);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,24 +55,17 @@ export default function RegisterForm({
       !author ||
       !totalPages
     ) {
-      handleErrorAlert('Por favor, preencha todos os campos obrigatórios');
+      errorAlert('Por favor, preencha todos os campos obrigatórios');
       return false;
     }
 
     if (totalPages <= 0) {
-      handleErrorAlert('O total de páginas deve ser maior que zero');
+      errorAlert('O total de páginas deve ser maior que zero');
       return false;
     }
 
     return true;
   };
-
-  const handleErrorAlert = (message: string) =>
-    setAlert({
-      message,
-      severity: 'error',
-      open: true,
-    });
 
   return (
     <Box

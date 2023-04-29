@@ -4,6 +4,9 @@ export type BookRow = {
   id: Book["id"];
   title: Book['title'];
   author: Book['author'];
+};
+
+export type BookNestedRow = {
   nestedRow: [
     {
       bookPublisher: string;
@@ -11,4 +14,4 @@ export type BookRow = {
       isFinishedReading: boolean;
     }
   ];
-};
+} & BookRow;

@@ -1,4 +1,3 @@
-import { SnackbarAlertProps } from '@/components/Commons/SnackbarAlert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
@@ -7,11 +6,10 @@ import RegisterForm, { FormValues } from '../RegisterForm';
 import { boxFormStyle } from './Register.styles';
 
 type Props = {
-  setAlert: (props: SnackbarAlertProps) => void;
   onCreateBook: (formValues: FormValues) => Promise<void>;
 };
 
-const Register = ({ setAlert, onCreateBook }: Props) => {
+const Register = ({ onCreateBook }: Props) => {
   const [openFormModal, setOpenFormModal] = useState(false);
   const handleOpenFormModal = () => setOpenFormModal(true);
   const handleCloseFormModal = () => setOpenFormModal(false);
@@ -31,7 +29,6 @@ const Register = ({ setAlert, onCreateBook }: Props) => {
         <Box sx={boxFormStyle}>
           <RegisterForm
             onSubmit={handleCreateBook}
-            setAlert={setAlert}
             requiredValues
           />
         </Box>

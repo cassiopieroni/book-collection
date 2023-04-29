@@ -13,8 +13,27 @@ datasource db {
 model Book {
   id Int @id @default(autoincrement())
   title String
-  bookPublisher String
-  author String
+  bookPublisher BookPublisher @relation(fields: [bookPublisherId], references: [id])
+  bookPublisherId Int
+  author Author @relation(fields: [authorId], references: [id])
+  authorId Int
   totalPages Int
   isFinishedReading Boolean @default(false)
+  createdAt DateTime @default(now())
+
+  @@unique([authorId, title])
+}
+
+model Author {
+  id Int @id @default(autoincrement())
+  name String @unique
+  booksPublisher BookPublisher[]
+  books Book[]
+}
+
+model BookPublisher {
+  id Int @id @default(autoincrement())
+  name String @unique
+  authors Author[]
+  books Book[]
 }
