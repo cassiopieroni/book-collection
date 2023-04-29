@@ -1,14 +1,9 @@
-import * as React from 'react';
+import { useState } from 'react';
 
-import useBooksService from '../../services/hooks/useBooksService';
-
-import { DetailedBook } from '../../types/detailedBook.type';
 import { BookRow } from './BooksTable.types';
 import { Book } from '../../types/book.type';
 
 import {
-  Skeleton,
-  Box,
   Collapse,
   IconButton,
   Paper,
@@ -23,39 +18,14 @@ import {
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DetailedBookTable from '../DetailedBookTable';
 
 type RowProps = {
   row: BookRow;
 };
 
 const Row: React.FC<RowProps> = ({ row }) => {
-  const { getBook, loading } = useBooksService();
-
-  const [openDetailedBook, setOpenDetailedBook] = React.useState(false);
-  const [book, setBook] = React.useState<DetailedBook | null>(null);
-
-  const handleClick = async () => {
-    if (openDetailedBook) {
-      return setOpenDetailedBook(false);
-    }
-    try {
-      setOpenDetailedBook(true);
-      const detailedBook = await getBook(row.id);
-      setBook(detailedBook);
-    } catch (err: Error | any) {
-      alert('Não foi possível buscar sua lista de livros');
-    }
-  };
-
-  const renderLoadingCells = (quantity: number = 3) => {
-    return Array(quantity)
-      .fill(null)
-      .map((_, i) => (
-        <TableCell key={i} component="th" scope="row">
-          <Skeleton animation="wave" variant="text" sx={{ fontSize: '1rem' }} />
-        </TableCell>
-      ));
-  };
+  const [openDetailedBook, setOpenDetailedBook] = useState(false);
 
   return (
     <>
@@ -64,7 +34,7 @@ const Row: React.FC<RowProps> = ({ row }) => {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={handleClick}
+            onClick={() => setOpenDetailedBook(isOpen => !isOpen)}
           >
             {openDetailedBook ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
@@ -80,43 +50,7 @@ const Row: React.FC<RowProps> = ({ row }) => {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={openDetailedBook} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Detalhes do livro
-              </Typography>
-
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Editora</TableCell>
-
-                    <TableCell>Total de páginas</TableCell>
-
-                    <TableCell align="right">Finalizado</TableCell>
-                  </TableRow>
-                </TableHead>
-
-                <TableBody>
-                  <TableRow>
-                    {loading ?
-                      renderLoadingCells()
-                      : (
-                        <>
-                          <TableCell component="th" scope="row">
-                            {book?.bookPublisher}
-                          </TableCell>
-
-                          <TableCell>{book?.totalPages}</TableCell>
-
-                          <TableCell align="right">
-                            {book?.isFinishedReading ? 'sim' : 'não'}
-                          </TableCell>
-                        </>
-                      )}
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </Box>
+            {openDetailedBook && <DetailedBookTable bookId={row.id} />}
           </Collapse>
         </TableCell>
       </TableRow>
@@ -124,26 +58,16 @@ const Row: React.FC<RowProps> = ({ row }) => {
   );
 };
 
-type Props = {
+type BooksTableProps = {
   books?: Book[];
 };
 
-const BooksTable: React.FC<Props> = ({ books }) => {
+const BooksTable: React.FC<BooksTableProps> = ({ books }) => {
   if (!books || !books.length) {
     return (
       <Typography>Você ainda nâo possui nenhum livro cadastrado =/</Typography>
     );
   }
-
-  const createRows = (books: Book[]): BookRow[] => {
-    return books.map((book) => ({
-      id: book.id,
-      title: book.title,
-      author: book.author,
-    }));
-  };
-
-  const rows = createRows(books);
 
   return (
     <TableContainer component={Paper}>
@@ -151,15 +75,13 @@ const BooksTable: React.FC<Props> = ({ books }) => {
         <TableHead>
           <TableRow>
             <TableCell />
-
             <TableCell>Livro</TableCell>
-
             <TableCell align="right">Autor</TableCell>
           </TableRow>
         </TableHead>
 
         <TableBody>
-          {rows.map((row) => (
+          {books.map((row) => (
             <Row key={row.id} row={row} />
           ))}
         </TableBody>
