@@ -12,7 +12,7 @@ import { Book } from './types/book.type';
 const BooksScreen = () => {
   const { errorAlert, successAlert } = useContext(SnackbarAlertContext);
 
-  const { createBook, getAllBooks, loading } = useBooksService();
+  const { createBook, getAllBooks, deleteBook, loading } = useBooksService();
 
   const handleCreateBook = async (formValues: FormValues) => {
     try {
@@ -41,6 +41,17 @@ const BooksScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleDeleteook = async (bookId: Book["id"]) => {
+    try {
+      await deleteBook(bookId);
+      successAlert(`Livro deletado com sucesso`);
+
+      await handleGetAllBooks();
+    } catch (err: Error | any) {
+      errorAlert(err?.message || 'Algo deu errado =/');
+    }
+  };
+
   return (
     <>
       <LayoutWithHeader>
@@ -49,7 +60,7 @@ const BooksScreen = () => {
         </Box>
 
         <Box display={'flex'} alignItems={'center'} justifyContent={'center'}>
-          <BooksTable books={books} />
+          <BooksTable books={books} onDeleteBook={handleDeleteook} />
         </Box>
       </LayoutWithHeader>
 

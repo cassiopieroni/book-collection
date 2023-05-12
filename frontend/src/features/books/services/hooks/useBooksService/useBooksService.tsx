@@ -80,10 +80,36 @@ const useBooksService = () => {
     }
   };
 
+  const deleteBook = async (id: Book['id']): Promise<Book> => {
+    try {
+      setLoading(true);
+
+      const url = `${URL_BASE}/${id}`;
+
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro na requisição');
+      }
+
+      return await response.json();
+    } catch (error: Error | any) {
+      throw new Error(error?.message || 'Algo deu errado!');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     createBook,
     getAllBooks,
     getBook,
+    deleteBook,
     loading,
   };
 };

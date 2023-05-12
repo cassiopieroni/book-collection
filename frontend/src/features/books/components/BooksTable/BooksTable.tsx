@@ -15,6 +15,7 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
@@ -22,9 +23,10 @@ import DetailedBookTable from '../DetailedBookTable';
 
 type RowProps = {
   row: BookRow;
+  onDeleteBook: (id: number) => void;
 };
 
-const Row: React.FC<RowProps> = ({ row }) => {
+const Row: React.FC<RowProps> = ({ row, onDeleteBook }) => {
   const [openDetailedBook, setOpenDetailedBook] = useState(false);
 
   return (
@@ -45,6 +47,12 @@ const Row: React.FC<RowProps> = ({ row }) => {
         </TableCell>
 
         <TableCell align="right">{row.author}</TableCell>
+
+        <TableCell align="right">
+          <IconButton size='small' aria-label="delete" onClick={() => onDeleteBook(row.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </TableCell>
       </TableRow>
 
       <TableRow>
@@ -60,9 +68,10 @@ const Row: React.FC<RowProps> = ({ row }) => {
 
 type BooksTableProps = {
   books?: Book[];
+  onDeleteBook: (id: number) => void;
 };
 
-const BooksTable: React.FC<BooksTableProps> = ({ books }) => {
+const BooksTable: React.FC<BooksTableProps> = ({ books, onDeleteBook }) => {
   if (!books || !books.length) {
     return (
       <Typography>Você ainda nâo possui nenhum livro cadastrado =/</Typography>
@@ -77,12 +86,13 @@ const BooksTable: React.FC<BooksTableProps> = ({ books }) => {
             <TableCell />
             <TableCell>Livro</TableCell>
             <TableCell align="right">Autor</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
 
         <TableBody>
           {books.map((row) => (
-            <Row key={row.id} row={row} />
+            <Row key={row.id} row={row} onDeleteBook={onDeleteBook} />
           ))}
         </TableBody>
       </Table>
