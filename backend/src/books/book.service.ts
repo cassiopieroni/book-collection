@@ -35,9 +35,11 @@ export class BookService {
     });
   }
 
-  async deleteBook(where: Prisma.BookWhereUniqueInput): Promise<Book> {
+  async deleteBook(
+    bookWhereUniqueInput: Prisma.BookWhereUniqueInput,
+  ): Promise<Book> {
     return this.prisma.book.delete({
-      where,
+      where: bookWhereUniqueInput,
     });
   }
 }
