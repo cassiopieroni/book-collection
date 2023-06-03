@@ -1,13 +1,16 @@
 import { useContext, useState, ChangeEvent, SyntheticEvent } from 'react';
 import { SnackbarAlertContext } from '@/providers/SnackbarAlertProvider';
-import { Box, Button, Checkbox, FormControlLabel, TextField } from '@mui/material';
+import { Box, Button, Checkbox, FormControlLabel, Modal, TextField } from '@mui/material';
 import { FormValues } from './RegisterForm.types';
+import { boxFormStyle } from './RegisterForm.styles';
 
 type Props = {
   onSubmit: (form: FormValues) => void;
   requiredValues?: boolean;
   buttonText?: string;
   initialFormValues?: FormValues;
+  isOpen: boolean;
+  onClose: () => void;
 };
 
 const defaultFormValues: FormValues = {
@@ -22,7 +25,9 @@ export default function RegisterForm({
   onSubmit,
   requiredValues = false,
   buttonText = 'cadastrar',
-  initialFormValues = defaultFormValues
+  initialFormValues = defaultFormValues,
+  isOpen = false,
+  onClose
 }: Props) {
   const { errorAlert } = useContext(SnackbarAlertContext);
 
@@ -67,93 +72,98 @@ export default function RegisterForm({
   };
 
   return (
-    <Box
-      component="form"
-      sx={{
-        width: '100%',
-        boxSizing: 'border-box',
-        '& .MuiTextField-root': { my: 1 },
-      }}
-      noValidate
-      autoComplete="off"
-      display={'flex'}
-      alignItems={'center'}
-      justifyContent={'center'}
-      flexDirection={'column'}
-      onSubmit={handleSubmit}
-    >
-      <div>
-        <TextField
-          required={requiredValues}
-          label="Nome do livro"
-          placeholder="1984"
-          variant="standard"
-          size="small"
-          fullWidth
-          name="title"
-          value={form.title}
-          onChange={handleChange}
-        />
-
-        <TextField
-          required={requiredValues}
-          label="Autor"
-          placeholder="George Orwell"
-          variant="standard"
-          size="small"
-          fullWidth
-          name="author"
-          value={form.author}
-          onChange={handleChange}
-        />
-
-        <TextField
-          required={requiredValues}
-          label="Editora"
-          placeholder="Companhia das letras"
-          variant="standard"
-          size="small"
-          fullWidth
-          name="bookPublisher"
-          value={form.bookPublisher}
-          onChange={handleChange}
-        />
-
+    <Modal open={isOpen} onClose={onClose}>
+      <Box sx={boxFormStyle}>
         <Box
+          component="form"
+          sx={{
+            width: '100%',
+            boxSizing: 'border-box',
+            '& .MuiTextField-root': { my: 1 },
+          }}
+          noValidate
+          autoComplete="off"
           display={'flex'}
           alignItems={'center'}
-          justifyContent={'space-between'}
+          justifyContent={'center'}
+          flexDirection={'column'}
+          onSubmit={handleSubmit}
         >
-          <TextField
-            required={requiredValues}
-            label="Total de páginas"
-            placeholder="416"
-            variant="standard"
-            type="number"
-            size="small"
-            name="totalPages"
-            value={form.totalPages}
-            onChange={handleChange}
-          />
+          <div>
+            <TextField
+              required={requiredValues}
+              label="Nome do livro"
+              placeholder="1984"
+              variant="standard"
+              size="small"
+              fullWidth
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+            />
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="isFinishedReading"
-                value={form.isFinishedReading}
+            <TextField
+              required={requiredValues}
+              label="Autor"
+              placeholder="George Orwell"
+              variant="standard"
+              size="small"
+              fullWidth
+              name="author"
+              value={form.author}
+              onChange={handleChange}
+            />
+
+            <TextField
+              required={requiredValues}
+              label="Editora"
+              placeholder="Companhia das letras"
+              variant="standard"
+              size="small"
+              fullWidth
+              name="bookPublisher"
+              value={form.bookPublisher}
+              onChange={handleChange}
+            />
+
+            <Box
+              display={'flex'}
+              alignItems={'center'}
+              justifyContent={'space-between'}
+            >
+              <TextField
+                required={requiredValues}
+                label="Total de páginas"
+                placeholder="416"
+                variant="standard"
+                type="number"
+                size="small"
+                name="totalPages"
+                value={form.totalPages}
                 onChange={handleChange}
               />
-            }
-            label="Leitura finalizada"
-          />
-        </Box>
-      </div>
 
-      <Box my={2} width={'100%'}>
-        <Button variant="contained" fullWidth type="submit">
-          {buttonText}
-        </Button>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="isFinishedReading"
+                    value={form.isFinishedReading}
+                    checked={form.isFinishedReading}
+                    onChange={handleChange}
+                  />
+                }
+                label="Leitura finalizada"
+              />
+            </Box>
+          </div>
+
+          <Box my={2} width={'100%'}>
+            <Button variant="contained" fullWidth type="submit">
+              {buttonText}
+            </Button>
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </Modal>
   );
 }

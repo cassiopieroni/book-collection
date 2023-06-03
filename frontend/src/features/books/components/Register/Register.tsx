@@ -1,7 +1,6 @@
+import { Box, Button } from '@mui/material';
 import { useState } from 'react';
-import { Box, Button, Modal } from '@mui/material';
 import RegisterForm, { FormValues } from '../RegisterForm';
-import { boxFormStyle } from './Register.styles';
 
 type Props = {
   onCreateBook: (formValues: FormValues) => Promise<void>;
@@ -23,14 +22,12 @@ const Register = ({ onCreateBook }: Props) => {
         Cadastrar um livro
       </Button>
 
-      <Modal open={openFormModal} onClose={handleCloseFormModal}>
-        <Box sx={boxFormStyle}>
-          <RegisterForm
-            onSubmit={handleCreateBook}
-            requiredValues
-          />
-        </Box>
-      </Modal>
+      <RegisterForm
+        onSubmit={handleCreateBook}
+        requiredValues
+        isOpen={openFormModal}
+        onClose={handleCloseFormModal}
+      />
     </Box>
   );
 };

@@ -7,29 +7,28 @@ import { DetailedBook } from '../../types/detailedBook.type';
 import {
   Skeleton,
   Box,
+  IconButton,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Typography
+  Typography,
+  Modal
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { SnackbarAlertContext } from '@/providers/SnackbarAlertProvider';
+import RegisterForm, { FormValues } from '../RegisterForm';
 
 type RowProps = {
   bookId: number;
 };
 
 const DetailedBookTable: React.FC<RowProps> = ({ bookId }) => {
-  const { errorAlert } = useContext(SnackbarAlertContext);
+  const { errorAlert, successAlert } = useContext(SnackbarAlertContext);
 
-  useEffect(() => {
-    getBookService();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const { getBook, loading } = useBooksService();
+  const { getBook, editBook, loading } = useBooksService();
 
   const [book, setBook] = useState<DetailedBook | null>(null);
 
@@ -42,6 +41,24 @@ const DetailedBookTable: React.FC<RowProps> = ({ bookId }) => {
     }
   };
 
+  useEffect(() => {
+    getBookService();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const [isOpenEditModal, setIsOpenEditModal] = useState(false);
+
+  const handleEditBook = async (editedBook: FormValues) => {
+    try {
+      await editBook(editedBook);
+      setIsOpenEditModal(false);
+      await getBookService();
+      successAlert('Livro editado com sucesso')
+    } catch (err: Error | any) {
+      errorAlert(err.message || 'Algo deu errado =/');
+    }
+  }
+
   const renderLoadingCells = (quantity: number = 3) => {
     return Array(quantity)
       .fill(null)
@@ -52,11 +69,34 @@ const DetailedBookTable: React.FC<RowProps> = ({ bookId }) => {
       ));
   };
 
+  const canEditBook = !loading && book;
+
   return (
-    <Box sx={{ margin: 1 }}>
-      <Typography variant="h6" gutterBottom component="div">
-        Detalhes do livro
-      </Typography>
+    <Box my={1}>
+      <Box display="flex" alignItems="center" justifyContent="center" style={{ position: "relative" }}>
+        <Typography variant="h6" gutterBottom component="div">
+          Detalhes do livro
+        </Typography>
+        <IconButton
+          disabled={!canEditBook}
+          size='small'
+          aria-label="editar"
+          onClick={() => setIsOpenEditModal(true)}
+          style={{ position: "absolute", right: 0 }}
+        >
+          <EditIcon />
+        </IconButton>
+        {canEditBook && (
+          <RegisterForm
+            onSubmit={handleEditBook}
+            requiredValues
+            initialFormValues={book}
+            buttonText="Editar"
+            isOpen={isOpenEditModal}
+            onClose={() => setIsOpenEditModal(false)}
+          />
+        )}
+      </Box>
 
       <Table size="small" aria-label="purchases">
         <TableHead>

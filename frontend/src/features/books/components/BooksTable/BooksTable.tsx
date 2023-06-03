@@ -49,7 +49,7 @@ const Row: React.FC<RowProps> = ({ row, onDeleteBook }) => {
         <TableCell align="right">{row.author}</TableCell>
 
         <TableCell align="right">
-          <IconButton size='small' aria-label="delete" onClick={() => onDeleteBook(row.id)}>
+          <IconButton size='small' aria-label="deletar" onClick={() => onDeleteBook(row.id)}>
             <DeleteIcon />
           </IconButton>
         </TableCell>
