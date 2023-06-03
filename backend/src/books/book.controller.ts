@@ -1,9 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { CreateBookDto } from './dtos/create-book.dto';
 
 import { AuthorService } from './author.service';
 import { BookService } from './book.service';
 import { BookPublisherService } from './bookPublisher.service';
+import { EditBookDto } from './dtos/edit-book.dto';
 
 @Controller('books')
 export class BookController {
@@ -58,6 +67,10 @@ export class BookController {
     return this.authorService.author({ id });
   }
 
+  async getBookPublisher(id: number) {
+    return this.bookPublisherService.bookPublisher({ id });
+  }
+
   @Post()
   async createBook(@Body() body: CreateBookDto) {
     const { title, bookPublisher, author, totalPages, isFinishedReading } =
@@ -74,6 +87,33 @@ export class BookController {
         connectOrCreate: {
           where: { name: bookPublisher },
           create: { name: bookPublisher },
+        },
+      },
+    });
+  }
+
+  @Put(':bookId')
+  async editBook(@Param('bookId') bookId: string, @Body() body: EditBookDto) {
+    const { title, bookPublisher, author, totalPages, isFinishedReading } =
+      body;
+
+    return await this.bookService.updateBook({
+      where: { id: Number(bookId) },
+      data: {
+        title,
+        totalPages,
+        isFinishedReading,
+        author: {
+          connectOrCreate: {
+            where: { name: author },
+            create: { name: author },
+          },
+        },
+        bookPublisher: {
+          connectOrCreate: {
+            where: { name: bookPublisher },
+            create: { name: bookPublisher },
+          },
         },
       },
     });
